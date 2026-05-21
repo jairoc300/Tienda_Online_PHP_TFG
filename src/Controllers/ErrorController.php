@@ -11,7 +11,7 @@
         }
 
         public function error404(): void {
-            $this->pages->render('error/error', ['título' => 'Página no encontrada']);
+            $this->pages->render('error/error', ['titulo' => 'Página no encontrada']);
         }
         
     }

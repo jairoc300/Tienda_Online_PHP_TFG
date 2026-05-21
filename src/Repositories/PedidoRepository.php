@@ -27,7 +27,6 @@ class PedidoRepository {
     public function getAll() {
         $sql = "SELECT * FROM pedidos ORDER BY id DESC";
         $this->db->ejecucionConsultaSql($sql);
-        $this->db->cerrarConexion();
         return $this->db->todosRegistrosUltimaConsulta();
     }
 
@@ -37,7 +36,6 @@ class PedidoRepository {
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
-        $this->db->cerrarConexion();
         return $pedido;
     }
 
@@ -47,7 +45,6 @@ class PedidoRepository {
         $stmt->bindParam(':usuarioId', $usuarioId, PDO::PARAM_INT);
         $stmt->execute();
         $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->db->cerrarConexion();
         return $pedidos;
     }
 
@@ -61,7 +58,6 @@ class PedidoRepository {
         $stmt = $this->db->ejecucionDeclaracionSQL($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $delete = $stmt->execute();
-        $this->db->cerrarConexion();
         return $delete;
     }
 
@@ -72,22 +68,18 @@ class PedidoRepository {
         $stmt->bindParam(':coste', $coste, PDO::PARAM_STR);
         $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
         $update = $stmt->execute();
-        $this->db->cerrarConexion();
         return $update;
     }
 
     public function getProductosPedido($pedidoId) {
-        
-        $sql = "SELECT * FROM pedidos";
-        // $sql = "SELECT p.* FROM productos p
-        //         INNER JOIN lineas_pedidos lp ON p.id = lp.producto_id
-        //         WHERE lp.pedido_id = pedidoId;";
+        $sql = "SELECT p.*, lp.unidades FROM productos p
+                INNER JOIN lineas_pedidos lp ON p.id = lp.producto_id
+                WHERE lp.pedido_id = :pedidoId";
 
         $stmt = $this->db->ejecucionDeclaracionSQL($sql); 
         $stmt->bindParam(':pedidoId', $pedidoId, PDO::PARAM_INT);
         $stmt->execute();
         $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->db->cerrarConexion();
         return $productos;
     }
 
@@ -99,7 +91,6 @@ class PedidoRepository {
         $stmt->bindParam(':productoId', $productoId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $this->db->cerrarConexion();
         return $result ? $result['cantidad'] : 0;
     }
 
@@ -162,6 +153,20 @@ class PedidoRepository {
         }
     }
 
+    private function actualizarStock($carrito)
+    {
+        foreach ($carrito as $producto) {
+            $productoId = $producto['id'];
+            $cantidad = $producto['cantidad'];
+
+            $sqlStock = "UPDATE productos SET stock = stock - :cantidad WHERE id = :productoId";
+            $stmtStock = $this->db->ejecucionDeclaracionSQL($sqlStock);
+            $stmtStock->bindParam(':cantidad', $cantidad, PDO::PARAM_INT);
+            $stmtStock->bindParam(':productoId', $productoId, PDO::PARAM_INT);
+            $stmtStock->execute();
+        }
+    }
+
     public function guardarCategoria($usuarioId, $provincia, $localidad, $direccion, $coste, $estado, $fecha, $hora, $carrito)
     {
         // Comienzo de la transacción
@@ -174,10 +179,13 @@ class PedidoRepository {
             // Paso 2: Insertar líneas de pedido en la tabla lineas_pedido
             $this->insertLineasPedido($pedidoId, $carrito);
 
+            // Paso 3: Actualizar el stock de los productos
+            $this->actualizarStock($carrito);
+
             // Commit si todas las operaciones fueron exitosas
             $this->db->confirmar();
 
-            // Puedes devolver el ID del pedido creado o cualquier otro dato que necesites
+            // Se puede devolver el ID del pedido creado o cualquier otro dato que necesites
             return $pedidoId;
         } catch (PDOException $e) {
             // En caso de error, realizar rollback y lanzar la excepción nuevamente
@@ -193,10 +201,16 @@ public function confirmarPedido($idPedido){
             $sql = "UPDATE pedidos SET estado = '$estado' WHERE id = $idPedido";
 
             $this->db->exec($sql);
-
-            $this->db->cerrarConexion();
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
+    }
+
+    public function obtenerUsuarioPorId($usuarioId) {
+        $sql = "SELECT nombre, apellidos, email FROM usuarios WHERE id = :id";
+        $stmt = $this->db->ejecucionDeclaracionSQL($sql);
+        $stmt->bindParam(':id', $usuarioId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

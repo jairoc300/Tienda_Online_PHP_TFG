@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Usuarios - Tienda Online</title>
+    <link rel="icon" href="<?=BASE_URL?>public/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.7.0/remixicon.css">
+    <link rel="stylesheet" href="<?=BASE_URL?>public/css/global.css">
+    <link rel="stylesheet" href="<?=BASE_URL?>public/css/cabecera.css">
+    <link rel="stylesheet" href="<?=BASE_URL?>public/css/footer.css">
     <link rel="stylesheet" href="<?=BASE_URL?>public/css/administrarUsuarios.css">
 </head>
 <body>

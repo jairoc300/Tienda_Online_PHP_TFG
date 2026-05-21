@@ -1,81 +1,280 @@
-/* Estilos para la sección del Login */
+/* -- Estilos para Login -- */
+
+:root {
+    --primary-color: #1a1a1a;
+    --secondary-color: #ff9500;
+    --hover-color: #ff7600;
+    --success-color: #4CAF50;
+    --danger-color: #f44336;
+    --text-light: #fff;
+    --text-dark: #333;
+    --background-light: #f5f5f5;
+}
 
 .fondo_login {
-    background-image: url("../img/fondo_login.jpg");
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(42, 42, 42, 0.8) 100%), url("../img/fondo_login.jpg");
     background-repeat: no-repeat;
     background-size: cover;
-    padding-top: 250px;
-    padding-bottom: 400px;
+    background-attachment: fixed;
+    padding: 180px 20px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .authentication-section {
     width: 100%;
-    max-width: 360px;
-    padding: 20px;
-    background: #ffffff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    max-width: 420px;
+    padding: 40px;
+    background: var(--text-light);
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
     text-align: center;
-    margin: auto; 
-    box-shadow: 5px 10px 5px 10px #333;
+    animation: slideInUp 0.6s ease;
+    border-top: 4px solid var(--secondary-color);
 }
 
-.authentication-section h1{
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.authentication-section h1 {
     font-size: 2em;
-    font-family: fantasy;
-    color: goldenrod;
+    color: var(--secondary-color);
+    margin: 0 0 30px 0;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Notificación del mensaje */
-.notification {
-    padding: 10px;
-    color: #fff;
-    margin-bottom: 15px;
-    border-radius: 5px;
+.notification, .alert {
+    padding: 12px 16px;
+    color: var(--text-light);
+    margin-bottom: 20px;
+    border-radius: 8px;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: fadeInDown 0.4s ease;
+    border-left: 4px solid;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .success {
-    background-color: #4CAF50; 
+    background-color: var(--success-color);
+    border-left-color: #2e7d32;
 }
 
 .error {
-    background-color: #f44336; 
+    background-color: var(--danger-color);
+    border-left-color: #c62828;
 }
 
 /* Estilos del formulario */
-.login-form .form-field {
-    margin-bottom: 15px;
+.login-form, .register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .form-field label {
     display: block;
-    margin-bottom: 5px;
-    font-size: 16px;
-    color: #333;
+    font-size: 14px;
+    color: var(--text-dark);
+    font-weight: 600;
+    text-align: left;
 }
 
 .form-field input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; 
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+}
+
+.form-field input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1);
+}
+
+/* Botón de submit */
+.form-field input[type="submit"], .login-btn, .register-btn {
+    padding: 12px;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--hover-color) 100%);
+    color: var(--text-light);
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(255, 149, 0, 0.2);
+}
+
+.form-field input[type="submit"]:hover, .login-btn:hover, .register-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(255, 149, 0, 0.35);
+}
+
+.form-field input[type="submit"]:active, .login-btn:active, .register-btn:active {
+    transform: translateY(0);
 }
 
 /* Opciones de cuenta */
+.account-options {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
 .account-options p {
-    margin-top: 10px;
+    margin: 10px 0;
     font-size: 14px;
+    color: var(--text-dark);
 }
 
 .account-options a {
-    color: #0066cc;
+    color: var(--secondary-color);
     text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .account-options a:hover {
-    text-decoration: underline;
+    color: var(--hover-color);
+    text-decoration: none;
+}
+
+.account-options a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--secondary-color);
+    transition: width 0.3s ease;
+}
+
+.account-options a:hover::after {
+    width: 100%;
+}
+
+/* Checkbox */
+input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fondo_login {
+        padding: 150px 15px;
+    }
+
+    .authentication-section {
+        max-width: 100%;
+        padding: 30px;
+    }
+
+    .authentication-section h1 {
+        font-size: 1.7em;
+        margin-bottom: 25px;
+    }
+
+    .form-field input {
+        font-size: 16px;
+    }
+
+    .form-field input[type="submit"] {
+        padding: 11px;
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .fondo_login {
+        padding: 120px 10px;
+        min-height: auto;
+    }
+
+    .authentication-section {
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .authentication-section h1 {
+        font-size: 1.4em;
+        margin-bottom: 20px;
+    }
+
+    .form-field {
+        gap: 6px;
+    }
+
+    .form-field label {
+        font-size: 13px;
+    }
+
+    .form-field input {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .form-field input[type="submit"] {
+        padding: 10px;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+
+    .account-options {
+        margin-top: 15px;
+        padding-top: 15px;
+    }
+
+    .account-options p {
+        font-size: 12px;
+        margin: 8px 0;
+    }
+
+    .account-options a {
+        font-size: 13px;
+    }
 }
 
 /* Estilos del botón */

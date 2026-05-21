@@ -125,5 +125,14 @@ class PedidoService {
         return $this->pedidoRepository->confirmarPedido($pedidoId);
     }
 
+    /**
+     * Obtiene los datos de un usuario por su ID.
+     *
+     * @param int $usuarioId ID del usuario.
+     */
+    public function obtenerUsuarioPorId($usuarioId) {
+        return $this->pedidoRepository->obtenerUsuarioPorId($usuarioId);
+    }
+
 }
 

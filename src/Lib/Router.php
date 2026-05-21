@@ -31,6 +31,12 @@ class Router {
     public static function dispatch(): void {
         $method = $_SERVER['REQUEST_METHOD'];
         $action = preg_replace('/tienda_online_php/', '', $_SERVER['REQUEST_URI']);
+        
+        // Remueve query strings (todo después de ?)
+        if (strpos($action, '?') !== false) {
+            $action = substr($action, 0, strpos($action, '?'));
+        }
+        
         $action = trim($action, '/');
 
         // Extrae el parámetro ID si existe en la URI.
@@ -39,7 +45,7 @@ class Router {
 
         if (!empty($match)) {
             $param = $match[0];
-            $action = preg_replace('/' . $match[0] . '/', ':id', $action);
+            $action = preg_replace('/' . preg_quote($match[0], '/') . '$/', ':id', $action);
         }
 
         // Intenta ejecutar la función asociada con la ruta y método.
@@ -48,7 +54,8 @@ class Router {
             echo call_user_func($callback, $param);
         } else {
             // Redirecciona a una página de error si la ruta no existe.
-            header('Location: ./tienda_online_php/error/');
+            header('Location: ' . BASE_URL . 'error');
+            exit;
         }
     }
 }

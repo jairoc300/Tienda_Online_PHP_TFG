@@ -27,10 +27,11 @@ class UsuarioController {
 
     // Método para validar el formulario de usuario
     private function validarFormulario($data) {
-        $nombre = filter_var($data['nombre'], FILTER_SANITIZE_STRING);
-        $apellidos = filter_var($data['apellidos'], FILTER_SANITIZE_STRING);
-        $email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
-        $password = filter_var($data['password'], FILTER_SANITIZE_STRING);
+        $nombre = strip_tags(trim($data['nombre'] ?? ''));
+        $apellidos = strip_tags(trim($data['apellidos'] ?? ''));
+        $email = filter_var($data['email'] ?? '', FILTER_VALIDATE_EMAIL);
+        $password = strip_tags(trim($data['password'] ?? ''));
+        $rol = strip_tags(trim($data['rol'] ?? 'user'));
     
         // Validación de regex
         $nombreRegex = "/^[a-zA-ZáéíóúÁÉÍÓÚ ]*$/";
@@ -50,13 +51,17 @@ class UsuarioController {
         if (empty($password) || !preg_match($passwordRegex, $password)) {
             $this->errores[] = 'La contraseña debe tener al menos una letra, un número y un mínimo de 8 caracteres.';
         }
+        if (!in_array($rol, ['admin', 'user'])) {
+            $rol = 'user';
+        }
 
         if (empty($this->errores)) {
             return [
                 'nombre' => $nombre,
                 'apellidos' => $apellidos,
                 'email' => $email,
-                'password' => password_hash($password, PASSWORD_BCRYPT, ['cost'=>4])
+                'password' => password_hash($password, PASSWORD_BCRYPT, ['cost'=>4]),
+                'rol' => $rol
             ];
         } else {
             return $this->errores;
@@ -66,7 +71,7 @@ class UsuarioController {
     // Método para validar el inicio de sesión
     private function validarLogin($data) {
         $email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
-        $password = filter_var($data['password'], FILTER_SANITIZE_STRING);
+        $password = strip_tags(trim($data['password'] ?? ''));
     
         // Validación de regex
         $emailRegex = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
@@ -92,27 +97,24 @@ class UsuarioController {
     // Método para registrar un nuevo usuario
     public function registro(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){
-            if ($_POST['data']){
+            if (isset($_POST['data']) && !empty($_POST['data'])){
+                $this->errores = []; // Reinicializar errores
                 $registrado = $this->validarFormulario($_POST['data']);
 
-                if ($registrado != ""){
-                    if (is_array($registrado)) {
-                        $usuario = Usuario::fromArray($registrado);
-                        $save = $this->usuarioService->create($usuario);
-                        $registrado = "";
-                        if ($save){
-                            $_SESSION['register'] = "complete";
-                        } else {
-                            $_SESSION['register'] = "failed";
-                        }
+                // Si registrado es un array y no tiene errores, es válido
+                if (is_array($registrado) && empty($this->errores)) {
+                    $usuario = Usuario::fromArray($registrado);
+                    $save = $this->usuarioService->create($usuario);
+                    
+                    if ($save){
+                        $_SESSION['register'] = "complete";
+                        $this->errores = [];
                     } else {
                         $_SESSION['register'] = "failed";
+                        $this->errores[] = "Error al guardar el usuario en la base de datos.";
                     }
                 }
-                else {
-                    $_SESSION['register'] = "failed";
-                }
-    
+                // Si hay errores en $this->errores, se mostrarán en la vista
             }
         }
     
@@ -166,11 +168,11 @@ class UsuarioController {
 
     // Método para validar la edición de un usuario
     public function validarEditar($data){
-        $id = filter_var($data['id'], FILTER_SANITIZE_STRING);
-        $nombre = filter_var($data['nombre'], FILTER_SANITIZE_STRING);
-        $apellidos = filter_var($data['apellidos'], FILTER_SANITIZE_STRING);
-        $email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
-        $rol = filter_var($data['rol'], FILTER_SANITIZE_STRING);
+        $id = strip_tags(trim($data['id'] ?? ''));
+        $nombre = strip_tags(trim($data['nombre'] ?? ''));
+        $apellidos = strip_tags(trim($data['apellidos'] ?? ''));
+        $email = filter_var($data['email'] ?? '', FILTER_VALIDATE_EMAIL);
+        $rol = strip_tags(trim($data['rol'] ?? ''));
     
         $nombreRegex = "/^[a-zA-ZáéíóúÁÉÍÓÚ ]*$/";
         $emailRegex = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";

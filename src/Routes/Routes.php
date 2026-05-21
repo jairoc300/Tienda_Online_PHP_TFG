@@ -8,6 +8,8 @@ use Controllers\UsuarioController;
 use Controllers\CarritoController;
 use Controllers\ErrorController;
 use Controllers\PedidoController;
+use Controllers\EstadisticasController;
+use Controllers\PagoController;
 use Lib\Router;
 
 class Routes {
@@ -16,8 +18,8 @@ class Routes {
             return (new InicioController())->index();
         });
 
-        Router::añadirRuta('GET', '/categoria/ver/?id=:id', function($id) {
-            return (new CategoriaController())->ver($id);
+        Router::añadirRuta('GET', '/categoria/ver', function($id = null) {
+            return (new CategoriaController())->ver($_GET['id'] ?? $id);
         });
 
         Router::añadirRuta('GET', '/categoria/crear', function() {
@@ -28,12 +30,12 @@ class Routes {
             return (new CategoriaController())->crear();
         });
 
-        Router::añadirRuta('GET', '/categoria/borrar/?id=:id', function($id) {
-            return (new CategoriaController())->borrar($id);
+        Router::añadirRuta('GET', '/categoria/borrar', function($id = null) {
+            return (new CategoriaController())->borrar($_GET['id'] ?? $id);
         });
 
-        Router::añadirRuta('GET', '/categoria/editar/?id=:id', function($id) {
-            return (new CategoriaController())->editar($id);
+        Router::añadirRuta('GET', '/categoria/editar', function($id = null) {
+            return (new CategoriaController())->editar($_GET['id'] ?? $id);
         });
 
         Router::añadirRuta('POST', '/categoria/actualizar', function() {
@@ -44,8 +46,12 @@ class Routes {
             return (new CategoriaController())->gestionarCategorias();
         });
 
-        Router::añadirRuta('GET', '/producto/verDetalles/?id=:id', function($id) {
-            return (new ProductoController())->verDetalles($id);
+        Router::añadirRuta('GET', '/admin/estadisticas', function() {
+            return (new EstadisticasController())->index();
+        });
+
+        Router::añadirRuta('GET', '/producto/verDetalles', function($id = null) {
+            return (new ProductoController())->verDetalles($_GET['id'] ?? $id);
         });
 
         Router::añadirRuta('GET', '/producto/crear', function() {
@@ -56,12 +62,12 @@ class Routes {
             return (new ProductoController())->crear();
         });
 
-        Router::añadirRuta('GET', '/producto/borrar/?id=:id', function($id) {
-            return (new ProductoController())->borrar($id);
+        Router::añadirRuta('GET', '/producto/borrar', function($id = null) {
+            return (new ProductoController())->borrar($_GET['id'] ?? $id);
         });
 
-        Router::añadirRuta('GET', '/producto/editar/?id=:id', function($id) {
-            return (new ProductoController())->editar($id);
+        Router::añadirRuta('GET', '/producto/editar', function($id = null) {
+            return (new ProductoController())->editar($_GET['id'] ?? $id);
         });
 
         Router::añadirRuta('POST', '/producto/editar', function() {
@@ -72,24 +78,24 @@ class Routes {
             return (new ProductoController())->gestionarProductos();
         });
 
-        Router::añadirRuta('GET', '/carrito/agregarProducto/?id=:id', function($id) {
-            return (new CarritoController())->agregarProducto($id);
+        Router::añadirRuta('GET', '/carrito/agregarProducto', function($id = null) {
+            return (new CarritoController())->agregarProducto($_GET['id'] ?? $id);
         });
 
         Router::añadirRuta('GET', '/carrito/obtenerCarrito', function() {
             return (new CarritoController())->obtenerCarrito();
         });
 
-        Router::añadirRuta('GET', '/carrito/eliminarProducto/?id=:id', function($id) {
-            return (new CarritoController())->eliminarProducto($id);
+        Router::añadirRuta('GET', '/carrito/eliminarProducto', function($id = null) {
+            return (new CarritoController())->eliminarProducto($_GET['id'] ?? $id);
         });
 
-        Router::añadirRuta('GET', '/carrito/aumentarCantidad/?id=:id', function($id) {
-            return (new CarritoController())->aumentarCantidad($id);
+        Router::añadirRuta('GET', '/carrito/aumentarCantidad', function($id = null) {
+            return (new CarritoController())->aumentarCantidad($_GET['id'] ?? $id);
         });
 
-        Router::añadirRuta('GET', '/carrito/disminuirCantidad/?id=:id', function($id) {
-            return (new CarritoController())->disminuirCantidad($id);
+        Router::añadirRuta('GET', '/carrito/disminuirCantidad', function($id = null) {
+            return (new CarritoController())->disminuirCantidad($_GET['id'] ?? $id);
         });
 
         Router::añadirRuta('GET', '/pedido/crear', function() {
@@ -116,16 +122,16 @@ class Routes {
             return (new PedidoController())->crear();
         });
 
-        Router::añadirRuta('GET', '/pedido/confirmarPedido/?id=:id', function($id) {
-            return (new PedidoController())->confirmarPedido($id);
+        Router::añadirRuta('GET', '/pedido/confirmarPedido', function($id = null) {
+            return (new PedidoController())->confirmarPedido($_GET['id'] ?? $id);
         });
 
-        Router::añadirRuta('GET', '/pedido/eliminar/?id=:id', function($id) {
-            return (new PedidoController())->eliminar($id);
+        Router::añadirRuta('GET', '/pedido/eliminar', function($id = null) {
+            return (new PedidoController())->eliminar($_GET['id'] ?? $id);
         });
 
-        Router::añadirRuta('GET', '/pedido/editar/?id=:id', function($id) {
-            return (new PedidoController())->editar($id);
+        Router::añadirRuta('GET', '/pedido/editar', function($id = null) {
+            return (new PedidoController())->editar($_GET['id'] ?? $id);
         });
 
         Router::añadirRuta('GET', '/pedido/actualizar', function() {
@@ -134,6 +140,23 @@ class Routes {
 
         Router::añadirRuta('POST', '/pedido/actualizar', function() {
             return (new PedidoController())->actualizar();
+        });
+
+        // RUTAS DE PAGO
+        Router::añadirRuta('GET', '/pago/procesarPago', function($id = null) {
+            return (new PagoController())->procesarPago();
+        });
+
+        Router::añadirRuta('POST', '/pago/efectuarPago', function() {
+            return (new PagoController())->efectuarPago();
+        });
+
+        Router::añadirRuta('GET', '/pago/confirmacionPago', function($id = null) {
+            return (new PagoController())->confirmacionPago();
+        });
+
+        Router::añadirRuta('POST', '/pago/actualizarDireccion', function() {
+            return (new PagoController())->actualizarDireccion();
         });
 
         Router::añadirRuta('GET', '/usuario/login', function() {
@@ -160,12 +183,12 @@ class Routes {
             return (new UsuarioController())->logout();
         });
 
-        Router::añadirRuta('GET', '/usuario/eliminar/?id=:id', function($id) {
-            return (new UsuarioController())->eliminar($id);
+        Router::añadirRuta('GET', '/usuario/eliminar', function($id = null) {
+            return (new UsuarioController())->eliminar($_GET['id'] ?? $id);
         });
 
-        Router::añadirRuta('GET', '/usuario/editar/?id=:id', function($id) {
-            return (new UsuarioController())->editar($id);
+        Router::añadirRuta('GET', '/usuario/editar', function($id = null) {
+            return (new UsuarioController())->editar($_GET['id'] ?? $id);
         });
 
         Router::añadirRuta('POST', '/usuario/actualizar', function() {

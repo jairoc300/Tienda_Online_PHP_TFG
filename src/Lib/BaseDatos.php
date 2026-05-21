@@ -17,10 +17,10 @@ class BaseDatos {
      * Inicializa los datos de conexión con la base de datos y establece la conexión.
      */
     function __construct() {
-        $this->servidor = $_ENV['SERVIDOR'];
-        $this->usuario = $_ENV['USUARIO'];
-        $this->pass = $_ENV['PASSWORD'];
-        $this->base_datos = $_ENV['BASE_DATOS'];
+        $this->servidor = $_ENV['SERVIDOR'] ?? getenv('SERVIDOR');
+        $this->usuario = $_ENV['USUARIO'] ?? getenv('USUARIO');
+        $this->pass = $_ENV['PASSWORD'] ?? getenv('PASSWORD');
+        $this->base_datos = $_ENV['BASE_DATOS'] ?? getenv('BASE_DATOS');
 
         $this->conexion = $this->conexionBaseDatos();
     }

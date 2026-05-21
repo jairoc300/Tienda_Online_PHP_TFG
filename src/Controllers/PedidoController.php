@@ -52,13 +52,22 @@ class PedidoController {
         if(!isset($_SESSION['login'])){
             $this->pages->render('usuario/login' , ['errores' => 'No hay productos en el carrito']);
         }
+        // Redirigir admin a panel de control
+        else if ($_SESSION['login']->rol == 'admin') {
+            header('Location: ' . BASE_URL . 'admin/estadisticas/');
+        }
         elseif(isset($_SESSION['login']) && count($_SESSION['carrito']) >= 1){
+            $errores = [];
             foreach ($_SESSION['carrito'] as $indice => $elemento) {
                 if ($elemento['cantidad'] > $elemento['stock']) {
-                    $errores = 'No hay suficiente stock para el producto ' . $elemento['nombre'];
-                    $total = $this->pedidoService->getTotalCarrito($_SESSION['carrito']);
-                    $this->pages->render('carrito/ver' , ['errores' => $errores, 'productos' => $_SESSION['carrito'], 'total' => $total]);
+                    $errores[] = 'El producto <strong>' . htmlspecialchars($elemento['nombre']) . '</strong> no tiene suficiente stock. Disponible: ' . $elemento['stock'] . ' unidades.';
                 }
+            }
+            
+            if (!empty($errores)) {
+                $total = $this->pedidoService->getTotalCarrito($_SESSION['carrito']);
+                $this->pages->render('carrito/ver' , ['errores' => implode(' | ', $errores), 'productos' => $_SESSION['carrito'], 'total' => $total]);
+                return;
             }
         
             $this->pages->render('pedido/crear');
@@ -97,29 +106,53 @@ class PedidoController {
         if (!isset($_SESSION['login'])) {
             header('Location: ' . BASE_URL . 'usuario/login');
         }
+        // Redirigir admin a gestión general de pedidos
+        else if ($_SESSION['login']->rol == 'admin') {
+            header('Location: ' . BASE_URL . 'pedido/todosLosPedidos');
+        }
         else {
             $usuario = $_SESSION['login'];
             $pedidos = $this->pedidoService->obtenerPedidosPorUsuario($usuario->id);
-            $this->pages->render('pedido/misPedidos', ['pedidos' => $pedidos]);
+            
+            // Obtener productos para cada pedido
+            $productos_por_pedido = [];
+            foreach ($pedidos as $pedido) {
+                $productos_por_pedido[$pedido['id']] = $this->pedidoService->getProductosPedido($pedido['id']);
+            }
+            
+            $this->pages->render('pedido/misPedidos', ['pedidos' => $pedidos, 'productos_por_pedido' => $productos_por_pedido]);
         }
     }
 
     /**
-     * Obtiene todos los pedidos de un usuario.
+     * Valida los datos del pedido.
      *
-     * @return array Los pedidos obtenidos.
+     * @param string $provincia Provincia de envío.
+     * @param string $localidad Localidad de envío.
+     * @param string $direccion Dirección de envío.
+     * @return array Array de errores o vacío si es válido.
      */
     public function validarPedido($provincia, $localidad, $direccion) {
         $errores = [];
-        if (empty($provincia) || strlen($provincia) < 2) {
-            $errores['provincia'] = 'La provincia no puede estar vacía y debe tener al menos 2 caracteres';
+        
+        // Sanitizar datos
+        $provincia = strip_tags(trim($provincia ?? ''));
+        $localidad = strip_tags(trim($localidad ?? ''));
+        $direccion = strip_tags(trim($direccion ?? ''));
+        
+        // Validaciones
+        if (empty($provincia) || strlen($provincia) < 2 || strlen($provincia) > 100) {
+            $errores[] = 'La provincia debe tener entre 2 y 100 caracteres.';
         }
-        if (empty($localidad) || strlen($localidad) < 2) {
-            $errores['localidad'] = 'La localidad no puede estar vacía y debe tener al menos 2 caracteres';
+        
+        if (empty($localidad) || strlen($localidad) < 2 || strlen($localidad) > 100) {
+            $errores[] = 'La localidad debe tener entre 2 y 100 caracteres.';
         }
-        if (empty($direccion) || strlen($direccion) < 5) {
-            $errores['direccion'] = 'La dirección no puede estar vacía y debe tener al menos 5 caracteres';
+        
+        if (empty($direccion) || strlen($direccion) < 5 || strlen($direccion) > 200) {
+            $errores[] = 'La dirección debe tener entre 5 y 200 caracteres.';
         }
+        
         return $errores;
     }
 
@@ -132,6 +165,10 @@ class PedidoController {
 
         if (!isset($_SESSION['login']) || $_SESSION['carrito'] == "") {
             header('Location: ' . BASE_URL . 'usuario/login');
+        }
+        // Redirigir admin
+        else if ($_SESSION['login']->rol == 'admin') {
+            header('Location: ' . BASE_URL . 'admin/estadisticas/');
         }
 
         else {
@@ -154,7 +191,9 @@ class PedidoController {
             $total = $this->pedidoService->getTotalCarrito($carrito);
             $pedido = $this->pedidoService->guardarPedido($usuario->id, $provincia, $localidad, $direccion, $total, $estado, $fecha, $hora, $carrito);
             unset($_SESSION['carrito']);
-            header('Location: ' . BASE_URL . 'pedido/misPedidos');
+            
+            // Redirigir a pago después de confirmar datos de entrega
+            header('Location: ' . BASE_URL . 'pago/procesarPago?id=' . $pedido);
             
             }
         }
@@ -254,9 +293,16 @@ class PedidoController {
         $mail->addAddress($usuario_email, 'Cliente');
         $mail->Subject = 'Ya puede recoger su pedido en la tienda online';
         ob_start();
-        $nombre = $_SESSION['login']->nombre;
-        $idPedido = $id;
         
+        // Obtener detalles del pedido
+        $pedido = $this->pedidoService->obtenerPedidoPorId($id);
+        $productos = $this->pedidoService->getProductosPedido($id);
+        
+        // Obtener datos del usuario que realizó el pedido
+        $usuarioData = $this->pedidoService->obtenerUsuarioPorId($pedido['usuario_id']);
+        $nombre = $usuarioData['nombre'] ?? 'Cliente';
+        
+        $idPedido = $id;
         $fecha = Utils::getCurrentDate();
         $hora = Utils::getCurrentTime();
         
@@ -268,23 +314,19 @@ class PedidoController {
         $mail->SMTPDebug = 0;
 
         if (!$mail->send()) {
-            dd("ërror");
+            dd("error");
         } else {
             header('Location: ' . BASE_URL . 'pedido/misPedidos');
         }
     }
     
-        //Section 2: IMAP
-        //IMAP commands requires the PHP IMAP Extension, found at: https://php.net/manual/en/imap.setup.php
-        //Function to call which uses the PHP imap_*() functions to save messages: https://php.net/manual/en/book.imap.php
-        //You can use imap_getmailboxes($imapStream, '/imap/ssl', '*' ) to get a list of available folders or labels, this can
-        //be useful if you are trying to get this working on a non-Gmail IMAP server.
+        
         function save_mail($mail)
         {
-            //You can change 'Sent Mail' to any other folder or tag
+            
             $path = '{imap.gmail.com:993/imap/ssl}[Gmail]/Sent Mail';
     
-            //Tell your server to open an IMAP connection using the same username and password as you used for SMTP
+            
             $imapStream = imap_open($path, $mail->Username, $mail->Password);
     
             $result = imap_append($imapStream, $path, $mail->getSentMIMEMessage());

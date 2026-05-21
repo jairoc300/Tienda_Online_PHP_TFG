@@ -41,12 +41,56 @@ class CategoriaController{
     }
 
     /**
-     * Ver categoría.
+     * Ver categoría con paginación, búsqueda y filtros.
      */
     public function ver($id) {
         $categoriaId = $id;
-        $productos = $this->productoService->getByCategoria($categoriaId);
-        $this->pages->render('categoria/ver', ['productos' => $productos]);
+        $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+        $busqueda = isset($_GET['busqueda']) ? trim($_GET['busqueda']) : '';
+        $precioMin = isset($_GET['precioMin']) ? (float)$_GET['precioMin'] : null;
+        $precioMax = isset($_GET['precioMax']) ? (float)$_GET['precioMax'] : null;
+        
+        // Si no se proporciona precioMax, obtener el máximo de la categoría
+        if ($precioMax === null) {
+            $precioMax = $this->productoService->obtenerPrecioMaximoCategoria($categoriaId);
+        }
+        
+        // Si no se proporciona precioMin, obtener el mínimo de la categoría
+        if ($precioMin === null) {
+            $precioMin = $this->productoService->obtenerPrecioMinimoCategoria($categoriaId);
+        }
+        
+        $porPagina = 4;
+        
+        // Obtener productos paginados con filtros
+        $productos = $this->productoService->getByCategoriaPaginadoFiltrado(
+            $categoriaId, 
+            $busqueda, 
+            $precioMin, 
+            $precioMax, 
+            $pagina, 
+            $porPagina
+        );
+        
+        // Contar total de productos con filtros
+        $totalProductos = $this->productoService->contarProductosFiltrado(
+            $categoriaId, 
+            $busqueda, 
+            $precioMin, 
+            $precioMax
+        );
+        
+        $totalPaginas = ceil($totalProductos / $porPagina);
+        
+        $this->pages->render('categoria/ver', [
+            'productos' => $productos,
+            'pagina' => $pagina,
+            'totalPaginas' => $totalPaginas,
+            'busqueda' => $busqueda,
+            'precioMin' => $precioMin,
+            'precioMax' => $precioMax,
+            'categoriaId' => $categoriaId
+        ]);
     }
 
     /**

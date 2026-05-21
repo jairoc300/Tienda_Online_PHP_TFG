@@ -107,6 +107,50 @@ INSERT INTO productos (categoria_id, nombre, descripcion, precio, stock, oferta,
 (4, 'Ratón Corsair Harpoon', 'Ratón gaming Corsair Harpoon RGB Wireless', 60.00, 30, NULL, CURDATE(), 'corsair_harpoon.jpg'),
 (4, 'Apple Magic Mouse 2', 'Apple Magic Mouse 2 con superficie táctil', 80.00, 40, NULL, CURDATE(), 'apple_magicmouse2.jpg');
 
+
+INSERT INTO productos (categoria_id, nombre, descripcion, precio, stock, oferta, fecha, imagen) VALUES
+(1, 'Monitor LG 24MP59G-P', 'Monitor LG de 24 pulgadas 1920x1080 IPS LED antirreflejos', 189.99, 45, NULL, CURDATE(), '1.jpg'),
+(1, 'Monitor Samsung 27 UR590C', 'Monitor curvo Samsung 27" 4K UHD VA 3840x2160', 349.99, 32, '12%', CURDATE(), '2.jpg'),
+(1, 'Monitor Dell UltraSharp U2723DE', 'Monitor Dell 27" 2560x1440 IPS profesional USB-C', 499.99, 25, NULL, CURDATE(), '3.jpg'),
+(1, 'Monitor ASUS ProArt PA247CV', 'Monitor ASUS 24" 1920x1200 IPS 100% sRGB profesional', 279.99, 18, '8%', CURDATE(), '4.jpg'),
+(1, 'Monitor BenQ PD2500Q', 'Monitor BenQ 25" 2560x1440 QHD IPS diseño gráfico', 449.99, 20, NULL, CURDATE(), '5.jpg'),
+(1, 'Monitor LG 32UP550 4K', 'Monitor LG 32" 4K UHD IPS Thunderbolt 3 monitor profesional', 799.99, 15, '10%', CURDATE(), '6.jpg');
+
+INSERT INTO productos (categoria_id, nombre, descripcion, precio, stock, oferta, fecha, imagen) VALUES
+(2, 'HP Pavilion 15-eh1078ca', 'HP Pavilion 15.6" Ryzen 7 5700U 16GB RAM 512GB SSD', 649.99, 35, NULL, CURDATE(), '7.jpg'),
+(2, 'MacBook Pro 14 M2', 'Apple MacBook Pro 14" M2 Pro 16GB 512GB gris espacial', 1999.99, 28, NULL, CURDATE(), '8.jpg'),
+(2, 'Dell XPS 13 Plus 9320', 'Dell XPS 13 Plus 13.4" OLED FHD Intel Core i7 16GB 512GB', 1299.99, 22, '5%', CURDATE(), '9.jpg'),
+(2, 'Lenovo ThinkPad X1 Carbon', 'Lenovo ThinkPad X1 Carbon 14" Intel i7 16GB 512GB SSD', 1449.99, 19, NULL, CURDATE(), '10.jpg'),
+(2, 'ASUS VivoBook 15 F515EA', 'ASUS VivoBook 15.6" Intel i5-1135G7 8GB 512GB FHD', 499.99, 40, '15%', CURDATE(), '11.jpg'),
+(2, 'Acer Aspire 5 A515-56', 'Acer Aspire 5 15.6" Intel i7 16GB 512GB NVMe SSD', 749.99, 30, NULL, CURDATE(), '12.jpg');
+
+-- Teclados (5 productos)
+INSERT INTO productos (categoria_id, nombre, descripcion, precio, stock, oferta, fecha, imagen) VALUES
+(3, 'Corsair K95 RGB Platinum', 'Teclado mecánico Corsair K95 RGB Platinum XT Cherry MX', 199.99, 48, '10%', CURDATE(), '13.jpg'),
+(3, 'Logitech G Pro X 60', 'Teclado mecánico gaming Logitech G Pro X 60 RGB inalámbrico', 149.99, 55, NULL, CURDATE(), '14.jpg'),
+(3, 'Razer BlackWidow V3 Pro', 'Teclado mecánico Razer BlackWidow V3 Pro RGB inalámbrico', 159.99, 42, '8%', CURDATE(), '15.jpg'),
+(3, 'SteelSeries Apex Pro', 'Teclado mecánico SteelSeries Apex Pro OmniPoint ajustable', 199.99, 35, NULL, CURDATE(), '16.jpg'),
+(3, 'Keychron K2 Pro', 'Teclado mecánico Keychron K2 Pro RGB Hot-swap Bluetooth', 99.99, 60, '12%', CURDATE(), '17.jpg');
+
+-- Ratones (5 productos)  
+INSERT INTO productos (categoria_id, nombre, descripcion, precio, stock, oferta, fecha, imagen) VALUES
+(4, 'Logitech MX Master 3S', 'Ratón Logitech MX Master 3S inalámbrico multi-dispositivo', 99.99, 50, NULL, CURDATE(), '18.jpg'),
+(4, 'Razer DeathAdder V3', 'Ratón gaming Razer DeathAdder V3 sensor Focus Pro 30K', 69.99, 58, '15%', CURDATE(), '19.jpg'),
+(4, 'Corsair M65 RGB Elite', 'Ratón gaming Corsair M65 RGB Elite 18000 DPI avanzado', 79.99, 44, NULL, CURDATE(), '20.jpg'),
+(4, 'SteelSeries Prime Wireless', 'Ratón gaming SteelSeries Prime Wireless RGB inalámbrico', 79.99, 38, '10%', CURDATE(), '21.jpg'),
+(4, 'Logitech G502 HERO Gaming', 'Ratón gaming Logitech G502 HERO 25600 DPI con cable', 59.99, 65, NULL, CURDATE(), '22.jpg');
+
+-- Tabla para logs de acciones administrativas
+DROP TABLE IF EXISTS admin_logs;
+CREATE TABLE IF NOT EXISTS admin_logs(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    admin_id INT NOT NULL,
+    accion VARCHAR(255) NOT NULL,
+    fecha DATETIME NOT NULL,
+    detalles TEXT,
+    FOREIGN KEY (admin_id) REFERENCES usuarios(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 -- Usuarios
 INSERT INTO usuarios (nombre, apellidos, email, password, rol) 
 VALUES ('admin', 'admin', 'admin@gmail.com', '$2y$04$XZoQNRD0kF1kJ1Re1W2NRODn6.I5.2Z0Wp/j94vimGJ/Klubz18de', 'admin');

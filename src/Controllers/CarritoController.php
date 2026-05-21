@@ -30,14 +30,35 @@ class CarritoController {
     }
 
     /**
+     * Verifica que el usuario sea cliente (no admin).
+     * Redirige al admin al panel de control si intenta acceder.
+     */
+    private function verificarAccesoCliente() {
+        if (isset($_SESSION['login']) && $_SESSION['login']->rol == 'admin') {
+            header('Location: ' . BASE_URL . 'admin/estadisticas/');
+            exit;
+        }
+    }
+
+    /**
      * Agrega un producto al carrito.
      *
      * @param int $id El ID del producto.
      */
     public function agregarProducto() {
+        $this->verificarAccesoCliente();
+        
         $productoId = $_GET['id'];
         $this->producto->setId($productoId);
-        $producto = $this->productoService->categoriaPorId($productoId);
+        $producto = $this->productoService->porId($productoId);
+        
+        // Validar que hay stock disponible
+        if (!$producto || $producto['stock'] <= 0) {
+            $_SESSION['error'] = 'El producto no está disponible en este momento.';
+            header('Location: '.BASE_URL.'producto/verDetalles/?id='.$productoId);
+            exit;
+        }
+        
         if ($producto) {
             $_SESSION['carrito'][$productoId] = $producto;
             $_SESSION['carrito'][$productoId]['cantidad'] = 1;
@@ -64,6 +85,8 @@ class CarritoController {
      * @return array Los productos obtenidos.
      */
     public function obtenerCarrito() {
+        $this->verificarAccesoCliente();
+        
         if (!isset($_SESSION['carrito'])) {
             $_SESSION['carrito'] = [];
         }
@@ -87,7 +110,10 @@ class CarritoController {
     public function aumentarCantidad($id) {
         $productoId = $id;
         if (isset($_SESSION['carrito'][$productoId])) {
-            $_SESSION['carrito'][$productoId]['cantidad']++;
+            // No permitir superar el stock disponible
+            if ($_SESSION['carrito'][$productoId]['cantidad'] < $_SESSION['carrito'][$productoId]['stock']) {
+                $_SESSION['carrito'][$productoId]['cantidad']++;
+            }
         }
         header('Location: '.BASE_URL.'carrito/obtenerCarrito/');        
     }

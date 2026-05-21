@@ -32,16 +32,12 @@ h1 {
 
 .action-button a {
     padding: 10px 15px;
-    background-color: #5cb85c; /* Verde claro para acciones positivas */
     color: white;
     border-radius: 5px;
     text-decoration: none;
     transition: background-color 0.3s;
 }
 
-.action-button a:hover {
-    background-color: #4cae4c; /* Un verde más oscuro para el hover */
-}
 
 /* Estilos para la tabla */
 .category-table table {
@@ -66,11 +62,11 @@ h1 {
 }
 
 .edit-link {
-    background-color: #f0ad4e; /* Amarillo para editar */
+    background-color: #f0ad4e;
 }
 
 .delete-link {
-    background-color: #d9534f; /* Rojo para eliminar */
+    background-color: #d9534f;
 }
 
 .edit-link:hover {
@@ -91,6 +87,6 @@ h1 {
     }
 
     .category-table th, .category-table td {
-        padding: 8px; /* Menor padding para más espacio en dispositivos móviles */
+        padding: 8px; 
     }
 }
