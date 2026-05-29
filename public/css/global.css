@@ -37,7 +37,10 @@ html {
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--background-light);
+    background-image: url("../img/fondo_detalles.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
     color: var(--text-dark);
     line-height: 1.6;
     padding-top: 70px;

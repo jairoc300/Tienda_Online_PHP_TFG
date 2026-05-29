@@ -12,7 +12,10 @@
 }
 
 .product-section {
-    background: linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%);
+    background-image: url("../img/fondo_detalles.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
     padding-top: 120px;
     padding-bottom: 80px;
     min-height: 100vh;
