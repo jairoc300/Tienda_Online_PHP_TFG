@@ -9,4 +9,6 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-CMD php -S 0.0.0.0:${PORT:-8080} -t public router.php
+EXPOSE 8080
+
+CMD ["php", "-S", "0.0.0.0:8080", "-t", "public", "router.php"]
