@@ -280,7 +280,7 @@ class PedidoController {
         
         $mail = new PHPMailer();
         $mail->isSMTP();
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        $mail->SMTPDebug = 0;
         $mail->Host = 'smtp.gmail.com';
         $mail->Port = 465;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
@@ -293,31 +293,26 @@ class PedidoController {
         $mail->addAddress($usuario_email, 'Cliente');
         $mail->Subject = 'Ya puede recoger su pedido en la tienda online';
         ob_start();
-        
+
         // Obtener detalles del pedido
         $pedido = $this->pedidoService->obtenerPedidoPorId($id);
         $productos = $this->pedidoService->getProductosPedido($id);
-        
+
         // Obtener datos del usuario que realizó el pedido
         $usuarioData = $this->pedidoService->obtenerUsuarioPorId($pedido['usuario_id']);
         $nombre = $usuarioData['nombre'] ?? 'Cliente';
-        
+
         $idPedido = $id;
         $fecha = Utils::getCurrentDate();
         $hora = Utils::getCurrentTime();
-        
+
         include __DIR__ . '/../Views/pedido/correo.php';
         $html = ob_get_contents();
         ob_end_clean();
         $mail->msgHTML($html, __DIR__);
         $mail->AltBody = '';
-        $mail->SMTPDebug = 0;
 
-        if (!$mail->send()) {
-            dd("error");
-        } else {
-            header('Location: ' . BASE_URL . 'pedido/misPedidos');
-        }
+        $mail->send();
     }
     
         
