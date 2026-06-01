@@ -278,49 +278,40 @@ class PedidoController {
      */
     public function enviarEmail($id, $usuario_email) {
         
-        $mail = new PHPMailer();
-        $mail->isSMTP();
-        $mail->SMTPDebug = 0;
-        $mail->Timeout = 5;
-        $mail->Host = 'smtp.gmail.com';
-        $mail->Port = 587;
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->SMTPAuth = true;
-        $mail->Username = 'jairoalejandro71@gmail.com';
-        $mail->Password = 'ezas onxe xcfx mdua';
-        $mail->SMTPOptions = [
-                'ssl' => [
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                    'allow_self_signed' => true,
-                ]
-            ];
+        try {
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->SMTPDebug = 0;
+            $mail->Timeout = 15;
+            $mail->Host = 'smtp-relay.brevo.com';
+            $mail->Port = 587;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->SMTPAuth = true;
+            $mail->Username = 'ad36f4001@smtp-brevo.com';
+            $mail->Password = 'ztExrQ7dLX1N9CUS';
 
-        $mail->setFrom('jairoalejandro71@gmail.com', 'Tienda de Jairo');
-        $mail->addReplyTo('replyto@example.com', 'First Last');
-        $mail->addAddress($usuario_email, 'Cliente');
-        $mail->Subject = 'Ya puede recoger su pedido en la tienda online';
-        ob_start();
+            $mail->setFrom('ad36f4001@smtp-brevo.com', 'Tienda Online');
+            $mail->addAddress($usuario_email, 'Cliente');
+            $mail->Subject = 'Ya puede recoger su pedido en la tienda online';
 
-        // Obtener detalles del pedido
-        $pedido = $this->pedidoService->obtenerPedidoPorId($id);
-        $productos = $this->pedidoService->getProductosPedido($id);
+            $pedido = $this->pedidoService->obtenerPedidoPorId($id);
+            $productos = $this->pedidoService->getProductosPedido($id);
+            $usuarioData = $this->pedidoService->obtenerUsuarioPorId($pedido['usuario_id']);
+            $nombre = $usuarioData['nombre'] ?? 'Cliente';
+            $idPedido = $id;
+            $fecha = Utils::getCurrentDate();
+            $hora = Utils::getCurrentTime();
 
-        // Obtener datos del usuario que realizó el pedido
-        $usuarioData = $this->pedidoService->obtenerUsuarioPorId($pedido['usuario_id']);
-        $nombre = $usuarioData['nombre'] ?? 'Cliente';
-
-        $idPedido = $id;
-        $fecha = Utils::getCurrentDate();
-        $hora = Utils::getCurrentTime();
-
-        include __DIR__ . '/../Views/pedido/correo.php';
-        $html = ob_get_contents();
-        ob_end_clean();
-        $mail->msgHTML($html, __DIR__);
-        $mail->AltBody = '';
-
-        $mail->send();
+            ob_start();
+            include __DIR__ . '/../Views/pedido/correo.php';
+            $html = ob_get_contents();
+            ob_end_clean();
+            $mail->msgHTML($html, __DIR__);
+            $mail->AltBody = '';
+            $mail->send();
+        } catch (Exception $e) {
+            // El correo falló pero el pedido ya está confirmado, continuar
+        }
     }
     
         
@@ -339,4 +330,3 @@ class PedidoController {
         }
         
         }
-
