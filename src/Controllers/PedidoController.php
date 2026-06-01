@@ -288,6 +288,13 @@ class PedidoController {
         $mail->SMTPAuth = true;
         $mail->Username = 'jairoalejandro71@gmail.com';
         $mail->Password = 'ezas onxe xcfx mdua';
+        $mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ]
+            ];
 
         $mail->setFrom('jairoalejandro71@gmail.com', 'Tienda de Jairo');
         $mail->addReplyTo('replyto@example.com', 'First Last');
