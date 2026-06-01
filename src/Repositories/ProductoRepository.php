@@ -51,14 +51,15 @@ class ProductoRepository {
      * Inserta un nuevo producto en la base de datos.
      */
     public function guardar($categoriaId, $nombre, $descripcion, $precio, $stock, $imagen) {
-        $sql = "INSERT INTO productos (categoria_id, nombre, descripcion, precio, stock, imagen) VALUES (:categoriaId, :nombre, :descripcion, :precio, :stock, :imagen)";
+        $sql = "INSERT INTO productos (categoria_id, nombre, descripcion, precio, stock, imagen, fecha) VALUES (:categoriaId, :nombre, :descripcion, :precio, :stock, :imagen, :fecha)";
         return $this->executeUpdate($sql, [
             'categoriaId' => $categoriaId,
             'nombre' => $nombre,
             'descripcion' => $descripcion,
             'precio' => $precio,
             'stock' => $stock,
-            'imagen' => $imagen
+            'imagen' => $imagen,
+            'fecha' => date('Y-m-d')
         ]);
     }
 
