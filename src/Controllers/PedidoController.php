@@ -281,8 +281,9 @@ class PedidoController {
         $mail = new PHPMailer();
         $mail->isSMTP();
         $mail->SMTPDebug = 0;
+        $mail->Timeout = 5;
         $mail->Host = 'smtp.gmail.com';
-        $mail->Port = 465;
+        $mail->Port = 587;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->SMTPAuth = true;
         $mail->Username = 'jairoalejandro71@gmail.com';
