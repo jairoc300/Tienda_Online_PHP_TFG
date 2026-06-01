@@ -11,4 +11,4 @@ RUN composer install --no-dev --optimize-autoloader
 
 EXPOSE 8080
 
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "public", "router.php"]
+CMD ["php", "-d", "upload_max_filesize=20M", "-d", "post_max_size=20M", "-d", "file_uploads=On", "-S", "0.0.0.0:8080", "-t", "public", "router.php"]
