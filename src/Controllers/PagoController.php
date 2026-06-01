@@ -167,9 +167,9 @@ class PagoController {
             return;
         }
 
-        // Actualizar dirección en la base de datos
-        // Por ahora solo guardamos en sesión para mantener consistencia durante el flujo de pago
+        $this->pedidoService->actualizarDireccion($pedidoId, $provincia, $localidad, $direccion);
         header('Location: ' . BASE_URL . 'pago/confirmacionPago?id=' . $pedidoId);
+    
     }
 
     /**

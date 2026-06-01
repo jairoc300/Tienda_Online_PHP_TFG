@@ -194,7 +194,17 @@ class PedidoRepository {
         }
     }
 
-public function confirmarPedido($idPedido){
+    public function actualizarDireccion($id, $provincia, $localidad, $direccion) {
+        $sql = "UPDATE pedidos SET provincia = :provincia, localidad = :localidad, direccion = :direccion WHERE id = :id";
+        $stmt = $this->db->ejecucionDeclaracionSQL($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':provincia', $provincia, PDO::PARAM_STR);
+        $stmt->bindParam(':localidad', $localidad, PDO::PARAM_STR);
+        $stmt->bindParam(':direccion', $direccion, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    public function confirmarPedido($idPedido){
         $estado = 'confirmado';
         try {
             
@@ -214,3 +224,5 @@ public function confirmarPedido($idPedido){
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
+
+

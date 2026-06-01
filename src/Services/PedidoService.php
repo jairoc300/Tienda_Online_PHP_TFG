@@ -134,5 +134,9 @@ class PedidoService {
         return $this->pedidoRepository->obtenerUsuarioPorId($usuarioId);
     }
 
+    public function actualizarDireccion($id, $provincia, $localidad, $direccion) {
+        return $this->pedidoRepository->actualizarDireccion($id, $provincia, $localidad, $direccion);
+    }
+
 }
 
