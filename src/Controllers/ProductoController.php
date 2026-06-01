@@ -73,7 +73,13 @@ class ProductoController{
             // Generar nombre único para el archivo
             $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
             $nombreArchivo = time() . '_' . uniqid() . '.' . $extension;
-            $rutaDestino = $_SERVER['DOCUMENT_ROOT'] . '/tienda_online_php/public/img/' . $nombreArchivo;
+            $dirImg = __DIR__ . '/../../public/img/';
+
+            if (!is_dir($dirImg)) {
+                mkdir($dirImg, 0755, true);
+            }
+
+            $rutaDestino = $dirImg . $nombreArchivo;
 
             // Guardar el archivo
             if (!move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
