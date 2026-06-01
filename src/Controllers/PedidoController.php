@@ -277,23 +277,7 @@ class PedidoController {
      * @return void
      */
     public function enviarEmail($id, $usuario_email) {
-        
         try {
-            $mail = new PHPMailer(true);
-            $mail->isSMTP();
-            $mail->SMTPDebug = 0;
-            $mail->Timeout = 15;
-            $mail->Host = 'smtp-relay.brevo.com';
-            $mail->Port = 587;
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->SMTPAuth = true;
-            $mail->Username = 'ad36f4001@smtp-brevo.com';
-            $mail->Password = 'ztExrQ7dLX1N9CUS';
-
-            $mail->setFrom('ad36f4001@smtp-brevo.com', 'Tienda Online');
-            $mail->addAddress($usuario_email, 'Cliente');
-            $mail->Subject = 'Ya puede recoger su pedido en la tienda online';
-
             $pedido = $this->pedidoService->obtenerPedidoPorId($id);
             $productos = $this->pedidoService->getProductosPedido($id);
             $usuarioData = $this->pedidoService->obtenerUsuarioPorId($pedido['usuario_id']);
@@ -306,11 +290,27 @@ class PedidoController {
             include __DIR__ . '/../Views/pedido/correo.php';
             $html = ob_get_contents();
             ob_end_clean();
-            $mail->msgHTML($html, __DIR__);
-            $mail->AltBody = '';
-            $mail->send();
+
+            $data = [
+                'sender'      => ['email' => 'jairoalejandro71@gmail.com', 'name' => 'Tienda Online'],
+                'to'          => [['email' => $usuario_email]],
+                'subject'     => 'Ya puede recoger su pedido en la tienda online',
+                'htmlContent' => $html,
+            ];
+
+            $ch = curl_init('https://api.brevo.com/v3/smtp/email');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'accept: application/json',
+                'api-key: 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',
+                'content-type: application/json',
+            ]);
+            curl_exec($ch);
+            curl_close($ch);
         } catch (Exception $e) {
-            // El correo falló pero el pedido ya está confirmado, continuar
+            // continuar aunque falle el correo
         }
     }
     
