@@ -307,10 +307,16 @@ class PedidoController {
                 'api-key: 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',
                 'content-type: application/json',
             ]);
-            curl_exec($ch);
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
             curl_close($ch);
+
+            if ($curlError || $httpCode < 200 || $httpCode >= 300) {
+                error_log('[EMAIL ERROR] HTTP ' . $httpCode . ' | cURL: ' . $curlError . ' | Response: ' . $response);
+            }
         } catch (Exception $e) {
-            // continuar aunque falle el correo
+            error_log('[EMAIL EXCEPTION] ' . $e->getMessage());
         }
     }
     
