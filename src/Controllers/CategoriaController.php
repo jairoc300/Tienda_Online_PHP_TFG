@@ -82,6 +82,9 @@ class CategoriaController{
         
         $totalPaginas = ceil($totalProductos / $porPagina);
         
+        $categoriaData = $this->categoriaService->categoriaPorId($categoriaId);
+        $categoriaNombre = !empty($categoriaData) ? $categoriaData[0]['nombre'] : '';
+
         $this->pages->render('categoria/ver', [
             'productos' => $productos,
             'pagina' => $pagina,
@@ -89,7 +92,8 @@ class CategoriaController{
             'busqueda' => $busqueda,
             'precioMin' => $precioMin,
             'precioMax' => $precioMax,
-            'categoriaId' => $categoriaId
+            'categoriaId' => $categoriaId,
+            'categoriaNombre' => $categoriaNombre
         ]);
     }
 

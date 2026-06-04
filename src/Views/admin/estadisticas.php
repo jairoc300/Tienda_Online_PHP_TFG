@@ -61,7 +61,12 @@
 
 <style>
 .estadisticas-section {
-    padding: 20px;
+    background-image: url("<?=BASE_URL?>public/img/fondo_detalles.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 100px 20px 60px;
 }
 
 .estadisticas-container {

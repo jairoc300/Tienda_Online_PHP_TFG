@@ -74,5 +74,14 @@
             </form>
         </div>
     </section>
+<script>
+    document.getElementById('precio').addEventListener('input', function() {
+        var val = this.value;
+        var dot = val.indexOf('.');
+        if (dot !== -1 && val.length - dot > 3) {
+            this.value = val.substring(0, dot + 3);
+        }
+    });
+</script>
 </body>
 </html>
