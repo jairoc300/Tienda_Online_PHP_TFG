@@ -107,6 +107,9 @@ use Models\Producto;
     </style>
 </head>
 <body>
+<section class="category-section">
+    <h1 class="category-title"><?= htmlspecialchars($categoriaNombre ?? '') ?></h1>
+
     <!-- Sección de filtros -->
     <div class="filter-section">
         <h2>Filtrar Productos</h2>
@@ -213,5 +216,6 @@ use Models\Producto;
             </div>
         <?php endif; ?>
     <?php endif; ?>
+</section>
 </body>
 </html>

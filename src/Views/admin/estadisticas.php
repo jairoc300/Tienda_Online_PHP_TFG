@@ -61,7 +61,12 @@
 
 <style>
 .estadisticas-section {
-    padding: 20px;
+    background-image: url("<?=BASE_URL?>public/img/fondo_detalles.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 100px 20px 60px;
 }
 
 .estadisticas-container {
@@ -71,9 +76,18 @@
 
 .estadisticas-container h1 {
     text-align: center;
-    color: #333;
+    color: #ff9500;
     margin: 20px 0 30px 0;
     font-size: 2.2em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: fadeInDown 0.5s ease;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .estadisticas-grid {

@@ -20,6 +20,9 @@
                 <button class="new-user-btn"><a href="<?=BASE_URL?>usuario/registro/">Agregar Usuario</a></button>
             </div>
             <?php if (isset($_SESSION['login']) && $_SESSION['login']->rol == 'admin') : ?>
+                <?php if (isset($_GET['id'])): ?>
+                <form id="edit-user-form" action="<?=BASE_URL?>usuario/actualizar" method="post"></form>
+                <?php endif; ?>
                 <table class="users-table">
                     <thead>
                         <tr>
@@ -35,22 +38,20 @@
                         <?php foreach ($usuarios as $usuario): ?>
                             <?php if ((isset($_GET['id'])) && ($_GET['id'] == $usuario['id'])): ?>
                                 <tr>
-                                    <form action="<?=BASE_URL?>usuario/actualizar" method="post">
-                                        <td><input type="text" readonly name="data[id]" value="<?=$usuario['id']?>"></td>
-                                        <td><input type="text" name="data[nombre]" value="<?=$usuario['nombre']?>"></td>
-                                        <td><input type="text" name="data[apellidos]" value="<?=$usuario['apellidos']?>"></td>
-                                        <td><input type="text" name="data[email]" value="<?=$usuario['email']?>"></td>
-                                        <td>
-                                            <select name="data[rol]">
-                                                <option value="admin" <?=($usuario['rol'] == 'admin') ? 'selected' : ''?>>Administrador</option>
-                                                <option value="user" <?=($usuario['rol'] == 'user') ? 'selected' : ''?>>Usuario</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="hidden" name="id" value="<?=$usuario['id']?>">
-                                            <button type="submit" class="save-changes-btn">Guardar</button>
-                                        </td>
-                                    </form>
+                                    <td><input type="text" readonly name="data[id]" value="<?=$usuario['id']?>" form="edit-user-form"></td>
+                                    <td><input type="text" name="data[nombre]" value="<?=$usuario['nombre']?>" form="edit-user-form"></td>
+                                    <td><input type="text" name="data[apellidos]" value="<?=$usuario['apellidos']?>" form="edit-user-form"></td>
+                                    <td><input type="text" name="data[email]" value="<?=$usuario['email']?>" form="edit-user-form"></td>
+                                    <td>
+                                        <select name="data[rol]" form="edit-user-form">
+                                            <option value="admin" <?=($usuario['rol'] == 'admin') ? 'selected' : ''?>>Administrador</option>
+                                            <option value="user" <?=($usuario['rol'] == 'user') ? 'selected' : ''?>>Usuario</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="id" value="<?=$usuario['id']?>" form="edit-user-form">
+                                        <button type="submit" class="save-changes-btn" form="edit-user-form">Guardar</button>
+                                    </td>
                                 </tr>
                             <?php else: ?>
                                 <tr>
