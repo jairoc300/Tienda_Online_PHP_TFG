@@ -313,10 +313,12 @@ class PedidoController {
             curl_close($ch);
 
             if ($curlError || $httpCode < 200 || $httpCode >= 300) {
-                error_log('[EMAIL ERROR] HTTP ' . $httpCode . ' | cURL: ' . $curlError . ' | Response: ' . $response);
+                fwrite(STDERR, '[EMAIL ERROR] HTTP ' . $httpCode . ' | cURL: ' . $curlError . ' | Response: ' . $response . PHP_EOL);
+            } else {
+                fwrite(STDERR, '[EMAIL OK] HTTP ' . $httpCode . ' | Response: ' . $response . PHP_EOL);
             }
         } catch (Exception $e) {
-            error_log('[EMAIL EXCEPTION] ' . $e->getMessage());
+            fwrite(STDERR, '[EMAIL EXCEPTION] ' . $e->getMessage() . PHP_EOL);
         }
     }
     
