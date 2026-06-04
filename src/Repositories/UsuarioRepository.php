@@ -146,13 +146,24 @@ class UsuarioRepository {
     }
 
     public function borrarUsuario($id){
+        // Borrar lineas de pedidos del usuario
+        $sql = "DELETE lp FROM lineas_pedidos lp INNER JOIN pedidos p ON lp.pedido_id = p.id WHERE p.usuario_id = :id";
+        $stmt = $this->db->ejecucionDeclaracionSQL($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Borrar pedidos del usuario
+        $sql = "DELETE FROM pedidos WHERE usuario_id = :id";
+        $stmt = $this->db->ejecucionDeclaracionSQL($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Borrar usuario
         $sql = "DELETE FROM usuarios WHERE id = :id";
         $stmt = $this->db->ejecucionDeclaracionSQL($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         $this->db->cerrarConexion();
-        return $usuario;
     }
 
 }
