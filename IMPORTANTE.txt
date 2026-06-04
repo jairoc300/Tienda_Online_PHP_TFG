@@ -1,2 +1,6 @@
+-Enlace del Repositorio de Github -->  https://github.com/jairoc300/Tienda_Online_PHP_TFG
+
+-Enlace del Proyecto en Producción --> web-production-799e6.up.railway.app 
+
 -Para entrar como administrador ya hay un usuario registrado, su correo electrónico es "admin@gmail.com" y su contraseña es "admin1234"
 -He usado XAMPP y la base de datos está dentro de la carpeta "SQL"
